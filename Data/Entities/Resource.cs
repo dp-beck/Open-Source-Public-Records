@@ -8,6 +8,7 @@ public class Resource
     public string Description { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public string Notes { get; set; } = string.Empty;
+    public County? County { get; set; }
     public State? State { get; set; }
     public Country? Country { get; set; }
 }
