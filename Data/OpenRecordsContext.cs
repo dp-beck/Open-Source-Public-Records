@@ -1,0 +1,12 @@
+﻿using Data.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Data;
+
+public class OpenRecordsContext(DbContextOptions<OpenRecordsContext> options) : DbContext(options)
+{
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<State> States { get; set; }
+    public DbSet<County> Counties { get; set; }
+    public DbSet<Resource> Resources { get; set; }
+}
