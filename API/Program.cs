@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var connection = string.Empty;
+string connection;
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
@@ -31,4 +31,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// CRUD Operations - Countries
+app.MapGet("/countries", async(OpenRecordsContext context) => 
+    await context.Countries.ToListAsync());
+
+// CRUD Operations - States
+app.MapGet("/states", async(OpenRecordsContext context) => 
+    await context.States.ToListAsync());
+
+// CRUD Operations - Counties
+app.MapGet("/counties", async(OpenRecordsContext context) => 
+    await context.Counties.ToListAsync());
+
+// CRUD Operations - Resources
+app.MapGet("/resources", async(OpenRecordsContext context) => 
+    await context.Resources.ToListAsync());
 app.Run();
