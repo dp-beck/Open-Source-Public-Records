@@ -1,4 +1,5 @@
 using Data;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,18 +33,49 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // CRUD Operations - Countries
+
+// Get ALL
 app.MapGet("/countries", async(OpenRecordsContext context) => 
     await context.Countries.ToListAsync());
+
+// Get by ID
+app.MapGet("/countries/{id}", async (int id, OpenRecordsContext context) => 
+    await context.Countries.FindAsync(id)
+        is { } country
+            ? Results.Ok(country)
+            : Results.NotFound());
 
 // CRUD Operations - States
 app.MapGet("/states", async(OpenRecordsContext context) => 
     await context.States.ToListAsync());
 
+// Get by ID
+app.MapGet("/states/{id}", async (int id, OpenRecordsContext context) => 
+    await context.States.FindAsync(id)
+        is { } state
+        ? Results.Ok(state)
+        : Results.NotFound());
+
 // CRUD Operations - Counties
 app.MapGet("/counties", async(OpenRecordsContext context) => 
     await context.Counties.ToListAsync());
 
+// Get by ID
+app.MapGet("/counties/{id}", async (int id, OpenRecordsContext context) => 
+    await context.Counties.FindAsync(id)
+        is { } county
+        ? Results.Ok(county)
+        : Results.NotFound());
+
 // CRUD Operations - Resources
 app.MapGet("/resources", async(OpenRecordsContext context) => 
     await context.Resources.ToListAsync());
+
+// Get by ID
+app.MapGet("/resources/{id}", async (int id, OpenRecordsContext context) => 
+    await context.Resources.FindAsync(id)
+        is { } resource
+        ? Results.Ok(resource)
+        : Results.NotFound());
+
 app.Run();
