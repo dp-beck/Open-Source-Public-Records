@@ -54,6 +54,21 @@ app.MapPost("/countries", async (Country country, OpenRecordsContext context) =>
     return Results.Created($"/countries/{country.Id}", country);
 });
 
+// Delete Country
+app.MapDelete("/countries/{id}", async (int id, OpenRecordsContext context) =>
+{
+    if (await context.Countries.FindAsync(id) is { } country)
+    {
+        context.Countries.Remove(country);
+        await context.SaveChangesAsync();
+        return Results.NoContent();
+    }
+
+    return Results.NotFound();
+});
+
+// TO DO: PUT Action
+
 // CRUD Operations - States
 // Get ALL
 app.MapGet("/states", async(OpenRecordsContext context) => 
@@ -66,7 +81,7 @@ app.MapGet("/states/{id}", async (int id, OpenRecordsContext context) =>
         ? Results.Ok(state)
         : Results.NotFound());
 
-// Create Country
+// Create State
 app.MapPost("/states", async (State state, OpenRecordsContext context) =>
 {
     context.States.Add(state);
@@ -74,6 +89,21 @@ app.MapPost("/states", async (State state, OpenRecordsContext context) =>
 
     return Results.Created($"/states/{state.Id}", state);
 });
+
+// Delete State
+app.MapDelete("/states/{id}", async (int id, OpenRecordsContext context) =>
+{
+    if (await context.States.FindAsync(id) is { } state)
+    {
+        context.States.Remove(state);
+        await context.SaveChangesAsync();
+        return Results.NoContent();
+    }
+
+    return Results.NotFound();
+});
+
+// TO DO: PUT Action
 
 // CRUD Operations - Counties
 app.MapGet("/counties", async(OpenRecordsContext context) => 
@@ -86,7 +116,7 @@ app.MapGet("/counties/{id}", async (int id, OpenRecordsContext context) =>
         ? Results.Ok(county)
         : Results.NotFound());
 
-// Create Country
+// Create County
 app.MapPost("/counties", async (County county, OpenRecordsContext context) =>
 {
     context.Counties.Add(county);
@@ -94,6 +124,21 @@ app.MapPost("/counties", async (County county, OpenRecordsContext context) =>
 
     return Results.Created($"/countries/{county.Id}", county);
 });
+
+// Delete County
+app.MapDelete("/counties/{id}", async (int id, OpenRecordsContext context) =>
+{
+    if (await context.Counties.FindAsync(id) is { } county)
+    {
+        context.Counties.Remove(county);
+        await context.SaveChangesAsync();
+        return Results.NoContent();
+    }
+
+    return Results.NotFound();
+});
+
+// TO DO: PUT Action
 
 // CRUD Operations - Resources
 app.MapGet("/resources", async(OpenRecordsContext context) => 
@@ -114,5 +159,20 @@ app.MapPost("/resources", async (Resource resource, OpenRecordsContext context) 
 
     return Results.Created($"/countries/{resource.Id}", resource);
 });
+
+// Delete Resource
+app.MapDelete("/resources/{id}", async (int id, OpenRecordsContext context) =>
+{
+    if (await context.Resources.FindAsync(id) is { } resource)
+    {
+        context.Resources.Remove(resource);
+        await context.SaveChangesAsync();
+        return Results.NoContent();
+    }
+
+    return Results.NotFound();
+});
+
+// TO DO: PUT Action
 
 app.Run();
