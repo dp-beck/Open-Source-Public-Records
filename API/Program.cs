@@ -45,7 +45,17 @@ app.MapGet("/countries/{id}", async (int id, OpenRecordsContext context) =>
             ? Results.Ok(country)
             : Results.NotFound());
 
+// Create Country
+app.MapPost("/countries", async (Country country, OpenRecordsContext context) =>
+{
+    context.Countries.Add(country);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/countries/{country.Id}", country);
+});
+
 // CRUD Operations - States
+// Get ALL
 app.MapGet("/states", async(OpenRecordsContext context) => 
     await context.States.ToListAsync());
 
@@ -55,6 +65,15 @@ app.MapGet("/states/{id}", async (int id, OpenRecordsContext context) =>
         is { } state
         ? Results.Ok(state)
         : Results.NotFound());
+
+// Create Country
+app.MapPost("/states", async (State state, OpenRecordsContext context) =>
+{
+    context.States.Add(state);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/states/{state.Id}", state);
+});
 
 // CRUD Operations - Counties
 app.MapGet("/counties", async(OpenRecordsContext context) => 
@@ -67,6 +86,15 @@ app.MapGet("/counties/{id}", async (int id, OpenRecordsContext context) =>
         ? Results.Ok(county)
         : Results.NotFound());
 
+// Create Country
+app.MapPost("/counties", async (County county, OpenRecordsContext context) =>
+{
+    context.Counties.Add(county);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/countries/{county.Id}", county);
+});
+
 // CRUD Operations - Resources
 app.MapGet("/resources", async(OpenRecordsContext context) => 
     await context.Resources.ToListAsync());
@@ -77,5 +105,14 @@ app.MapGet("/resources/{id}", async (int id, OpenRecordsContext context) =>
         is { } resource
         ? Results.Ok(resource)
         : Results.NotFound());
+
+// Create Resource
+app.MapPost("/resources", async (Resource resource, OpenRecordsContext context) =>
+{
+    context.Resources.Add(resource);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/countries/{resource.Id}", resource);
+});
 
 app.Run();
