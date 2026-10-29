@@ -70,7 +70,7 @@ app.MapDelete("/countries/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// TO DO: PATCH Action
+// PATCH Action
 // Rename Country
 app.MapPatch("/countries/{id}", async (int id, CountryDto updatedCountry, OpenRecordsContext context) =>
 {
@@ -120,7 +120,23 @@ app.MapDelete("/states/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// TO DO: PUT Action
+// PATCH Action
+// Patch State
+app.MapPatch("/states/{id}", async (int id, StateDto updatedState, OpenRecordsContext context) =>
+{
+    var state = await context.States.FindAsync(id);
+
+    if (state is null) return Results.NotFound();
+
+    if (updatedState.Name is not null) state.Name = updatedState.Name;
+    if (updatedState.Country is not null) state.Country = updatedState.Country;
+    
+    state.ModifiedOn = DateTime.UtcNow;
+
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 // CRUD Operations - Counties
 // Get All

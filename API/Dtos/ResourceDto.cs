@@ -13,5 +13,4 @@ public class ResourceDto
     public County? County { get; set; }
     public State? State { get; set; }
     public Country? Country { get; set; }
-    public DateTime? ModifiedOn { get; set; }
 }
