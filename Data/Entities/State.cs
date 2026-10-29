@@ -8,7 +8,7 @@ public class State
 {
     public int Id { get; set; }
     [MaxLength(500)]
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; } = string.Empty;
     public List<County> Counties = [];
     public List<Resource> Resources = [];
     public Country? Country { get; set; }

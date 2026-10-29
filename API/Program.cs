@@ -99,8 +99,16 @@ app.MapGet("/states/{id}", async (int id, OpenRecordsContext context) =>
         : Results.NotFound());
 
 // Create State
-app.MapPost("/states", async (State state, OpenRecordsContext context) =>
+app.MapPost("/states", async (StateDto stateInput, OpenRecordsContext context) =>
 {
+    var country = await context.Countries.FindAsync(stateInput.CountryId);
+    
+    var state = new State
+    {
+        Name = stateInput.Name,
+        Country = country
+    };
+
     context.States.Add(state);
     await context.SaveChangesAsync();
 
@@ -125,11 +133,12 @@ app.MapDelete("/states/{id}", async (int id, OpenRecordsContext context) =>
 app.MapPatch("/states/{id}", async (int id, StateDto updatedState, OpenRecordsContext context) =>
 {
     var state = await context.States.FindAsync(id);
-
+    var country = await context.Countries.FindAsync(updatedState.CountryId);
+    
     if (state is null) return Results.NotFound();
 
     if (updatedState.Name is not null) state.Name = updatedState.Name;
-    if (updatedState.Country is not null) state.Country = updatedState.Country;
+    if (country is not null) state.Country = country;
     
     state.ModifiedOn = DateTime.UtcNow;
 
