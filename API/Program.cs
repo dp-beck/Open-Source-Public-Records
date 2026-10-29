@@ -108,6 +108,7 @@ app.MapDelete("/states/{id}", async (int id, OpenRecordsContext context) =>
 // TO DO: PUT Action
 
 // CRUD Operations - Counties
+// Get All
 app.MapGet("/counties", async(OpenRecordsContext context) => 
     await context.Counties.ToListAsync());
 
@@ -143,6 +144,7 @@ app.MapDelete("/counties/{id}", async (int id, OpenRecordsContext context) =>
 // TO DO: PUT Action
 
 // CRUD Operations - Resources
+// Get All
 app.MapGet("/resources", async(OpenRecordsContext context) => 
     await context.Resources.ToListAsync());
 

@@ -9,4 +9,11 @@ public class OpenRecordsContext(DbContextOptions<OpenRecordsContext> options) : 
     public DbSet<State> States { get; set; }
     public DbSet<County> Counties { get; set; }
     public DbSet<Resource> Resources { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Country>()
+            .Property(c => c.CreatedOn)
+            .HasDefaultValueSql("GETDATE()");    
+    }
 }
