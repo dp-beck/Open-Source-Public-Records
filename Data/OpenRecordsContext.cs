@@ -15,5 +15,17 @@ public class OpenRecordsContext(DbContextOptions<OpenRecordsContext> options) : 
         modelBuilder.Entity<Country>()
             .Property(c => c.CreatedOn)
             .HasDefaultValueSql("GETDATE()");    
+        
+        modelBuilder.Entity<State>()
+            .Property(c => c.CreatedOn)
+            .HasDefaultValueSql("GETDATE()"); 
+        
+        modelBuilder.Entity<County>()
+            .Property(c => c.CreatedOn)
+            .HasDefaultValueSql("GETDATE()"); 
+        
+        modelBuilder.Entity<Resource>()
+            .Property(c => c.CreatedOn)
+            .HasDefaultValueSql("GETDATE()"); 
     }
 }
