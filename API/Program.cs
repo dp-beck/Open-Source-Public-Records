@@ -1,3 +1,4 @@
+using API.Dtos;
 using Data;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,21 @@ app.MapDelete("/countries/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// TO DO: PUT Action
+// TO DO: PATCH Action
+// Rename Country
+app.MapPatch("/countries/{id}", async (int id, CountryDto updatedCountry, OpenRecordsContext context) =>
+{
+    var country = await context.Countries.FindAsync(id);
+
+    if (country is null) return Results.NotFound();
+
+    if (updatedCountry.Name is not null) country.Name = updatedCountry.Name;
+    country.ModifiedOn = DateTime.UtcNow;
+
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 // CRUD Operations - States
 // Get ALL
