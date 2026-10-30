@@ -186,7 +186,7 @@ counties.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// Patch State
+// Patch County
 counties.MapPatch("/{id}", async (int id, CountyDto updatedCounty, OpenRecordsContext context) =>
 {
     var county = await context.Counties.FindAsync(id);
@@ -203,6 +203,7 @@ counties.MapPatch("/{id}", async (int id, CountyDto updatedCounty, OpenRecordsCo
 
     return Results.NoContent();
 });
+
 // CRUD Operations - Resources
 // Get All
 resources.MapGet("/", async(OpenRecordsContext context) => 
@@ -237,6 +238,31 @@ resources.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// TO DO: PUT Action
+// Patch State
+resources.MapPatch("/{id}", async (int id, ResourceDto updatedResource, OpenRecordsContext context) =>
+{
+    var resource = await context.Resources.FindAsync(id);
+    var country = await context.Countries.FindAsync(updatedResource.CountryId);
+    var state = await context.States.FindAsync(updatedResource.StateId);
+    var county = await context.Counties.FindAsync(updatedResource.CountyId);
+    
+    if (resource is null) return Results.NotFound();
+
+    if (updatedResource.Name is not null) resource.Name = updatedResource.Name;
+    if (updatedResource.Type is not null) resource.Type = updatedResource.Type;
+    if (updatedResource.Description is not null) resource.Description = updatedResource.Description;
+    if (updatedResource.Url is not null) resource.Url = updatedResource.Url;
+    if (updatedResource.Notes  is not null) resource.Notes = updatedResource.Notes;
+    
+    if (country is not null) resource.Country = country;
+    if (state is not null) resource.State = state;
+    if (county is not null) resource.County = county;
+    
+    resource.ModifiedOn = DateTime.UtcNow;
+
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 app.Run();

@@ -10,7 +10,7 @@ public class ResourceDto
     public string? Description { get; set; }
     public string? Url { get; set; }
     public string? Notes { get; set; }
-    public County? County { get; set; }
-    public State? State { get; set; }
-    public Country? Country { get; set; }
+    public int? CountyId { get; set; }
+    public int? StateId { get; set; }
+    public int? CountryId { get; set; }
 }
