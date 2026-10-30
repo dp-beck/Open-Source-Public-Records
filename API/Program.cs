@@ -35,21 +35,27 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Map Group
+var countries = app.MapGroup("/countries");
+var states = app.MapGroup("/states");
+var counties = app.MapGroup("/counties");
+var resources = app.MapGroup("/resources");
+
 // CRUD Operations - Countries
 
 // Get ALL
-app.MapGet("/countries", async(OpenRecordsContext context) => 
+countries.MapGet("/", async(OpenRecordsContext context) => 
     await context.Countries.ToListAsync());
 
 // Get by ID
-app.MapGet("/countries/{id}", async (int id, OpenRecordsContext context) => 
+countries.MapGet("/{id}", async (int id, OpenRecordsContext context) => 
     await context.Countries.FindAsync(id)
         is { } country
             ? Results.Ok(country)
             : Results.NotFound());
 
 // Create Country
-app.MapPost("/countries", async (Country country, OpenRecordsContext context) =>
+countries.MapPost("/", async (Country country, OpenRecordsContext context) =>
 {
     context.Countries.Add(country);
     await context.SaveChangesAsync();
@@ -58,7 +64,7 @@ app.MapPost("/countries", async (Country country, OpenRecordsContext context) =>
 });
 
 // Delete Country
-app.MapDelete("/countries/{id}", async (int id, OpenRecordsContext context) =>
+countries.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
 {
     if (await context.Countries.FindAsync(id) is { } country)
     {
@@ -72,7 +78,7 @@ app.MapDelete("/countries/{id}", async (int id, OpenRecordsContext context) =>
 
 // PATCH Action
 // Rename Country
-app.MapPatch("/countries/{id}", async (int id, CountryDto updatedCountry, OpenRecordsContext context) =>
+countries.MapPatch("/{id}", async (int id, CountryDto updatedCountry, OpenRecordsContext context) =>
 {
     var country = await context.Countries.FindAsync(id);
 
@@ -88,18 +94,18 @@ app.MapPatch("/countries/{id}", async (int id, CountryDto updatedCountry, OpenRe
 
 // CRUD Operations - States
 // Get ALL
-app.MapGet("/states", async(OpenRecordsContext context) => 
+states.MapGet("/", async(OpenRecordsContext context) => 
     await context.States.ToListAsync());
 
 // Get by ID
-app.MapGet("/states/{id}", async (int id, OpenRecordsContext context) => 
+states.MapGet("/{id}", async (int id, OpenRecordsContext context) => 
     await context.States.FindAsync(id)
         is { } state
         ? Results.Ok(state)
         : Results.NotFound());
 
 // Create State
-app.MapPost("/states", async (StateDto stateInput, OpenRecordsContext context) =>
+states.MapPost("/", async (StateDto stateInput, OpenRecordsContext context) =>
 {
     var country = await context.Countries.FindAsync(stateInput.CountryId);
     
@@ -112,11 +118,11 @@ app.MapPost("/states", async (StateDto stateInput, OpenRecordsContext context) =
     context.States.Add(state);
     await context.SaveChangesAsync();
 
-    return Results.Created($"/states/{state.Id}", state);
+    return Results.Created($"/{state.Id}", state);
 });
 
 // Delete State
-app.MapDelete("/states/{id}", async (int id, OpenRecordsContext context) =>
+states.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
 {
     if (await context.States.FindAsync(id) is { } state)
     {
@@ -130,7 +136,7 @@ app.MapDelete("/states/{id}", async (int id, OpenRecordsContext context) =>
 
 // PATCH Action
 // Patch State
-app.MapPatch("/states/{id}", async (int id, StateDto updatedState, OpenRecordsContext context) =>
+states.MapPatch("/{id}", async (int id, StateDto updatedState, OpenRecordsContext context) =>
 {
     var state = await context.States.FindAsync(id);
     var country = await context.Countries.FindAsync(updatedState.CountryId);
@@ -149,18 +155,18 @@ app.MapPatch("/states/{id}", async (int id, StateDto updatedState, OpenRecordsCo
 
 // CRUD Operations - Counties
 // Get All
-app.MapGet("/counties", async(OpenRecordsContext context) => 
+counties.MapGet("/", async(OpenRecordsContext context) => 
     await context.Counties.ToListAsync());
 
 // Get by ID
-app.MapGet("/counties/{id}", async (int id, OpenRecordsContext context) => 
+counties.MapGet("/{id}", async (int id, OpenRecordsContext context) => 
     await context.Counties.FindAsync(id)
         is { } county
         ? Results.Ok(county)
         : Results.NotFound());
 
 // Create County
-app.MapPost("/counties", async (County county, OpenRecordsContext context) =>
+counties.MapPost("/", async (County county, OpenRecordsContext context) =>
 {
     context.Counties.Add(county);
     await context.SaveChangesAsync();
@@ -169,7 +175,7 @@ app.MapPost("/counties", async (County county, OpenRecordsContext context) =>
 });
 
 // Delete County
-app.MapDelete("/counties/{id}", async (int id, OpenRecordsContext context) =>
+counties.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
 {
     if (await context.Counties.FindAsync(id) is { } county)
     {
@@ -185,27 +191,27 @@ app.MapDelete("/counties/{id}", async (int id, OpenRecordsContext context) =>
 
 // CRUD Operations - Resources
 // Get All
-app.MapGet("/resources", async(OpenRecordsContext context) => 
+resources.MapGet("/", async(OpenRecordsContext context) => 
     await context.Resources.ToListAsync());
 
 // Get by ID
-app.MapGet("/resources/{id}", async (int id, OpenRecordsContext context) => 
+resources.MapGet("/{id}", async (int id, OpenRecordsContext context) => 
     await context.Resources.FindAsync(id)
         is { } resource
         ? Results.Ok(resource)
         : Results.NotFound());
 
 // Create Resource
-app.MapPost("/resources", async (Resource resource, OpenRecordsContext context) =>
+resources.MapPost("/", async (Resource resource, OpenRecordsContext context) =>
 {
     context.Resources.Add(resource);
     await context.SaveChangesAsync();
 
-    return Results.Created($"/countries/{resource.Id}", resource);
+    return Results.Created($"/{resource.Id}", resource);
 });
 
 // Delete Resource
-app.MapDelete("/resources/{id}", async (int id, OpenRecordsContext context) =>
+resources.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
 {
     if (await context.Resources.FindAsync(id) is { } resource)
     {
