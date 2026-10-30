@@ -134,7 +134,6 @@ states.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// PATCH Action
 // Patch State
 states.MapPatch("/{id}", async (int id, StateDto updatedState, OpenRecordsContext context) =>
 {
@@ -187,8 +186,23 @@ counties.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
     return Results.NotFound();
 });
 
-// TO DO: PUT Action
+// Patch State
+counties.MapPatch("/{id}", async (int id, CountyDto updatedCounty, OpenRecordsContext context) =>
+{
+    var county = await context.Counties.FindAsync(id);
+    var state = await context.States.FindAsync(updatedCounty.StateId);
+    
+    if (county is null) return Results.NotFound();
 
+    if (updatedCounty.Name is not null) county.Name = updatedCounty.Name;
+    if (state is not null) county.State = state;
+    
+    county.ModifiedOn = DateTime.UtcNow;
+
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 // CRUD Operations - Resources
 // Get All
 resources.MapGet("/", async(OpenRecordsContext context) => 
