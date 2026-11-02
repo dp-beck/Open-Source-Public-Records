@@ -3,7 +3,7 @@ using Data;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace API;
+namespace API.Endpoints;
 
 public static class CountryEndpoints
 {
@@ -35,7 +35,7 @@ public static class CountryEndpoints
         context.Countries.Add(country);
         await context.SaveChangesAsync();
 
-        return TypedResults.Created("/countries/{country.Id}", country);
+        return TypedResults.Created($"/countries/{country.Id}", country);
     }
     
     static async Task<IResult> DeleteCountry(int id, OpenRecordsContext context)

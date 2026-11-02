@@ -1,5 +1,6 @@
 using API;
 using API.Dtos;
+using API.Endpoints;
 using Data;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -37,126 +38,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 CountryEndpoints.Map(app);
+StateEndpoints.Map(app);
 
-// Map Group
-var countries = app.MapGroup("/countries");
-var states = app.MapGroup("/states");
+// Map Group -- moving to separate endpoints files and using typed results
 var counties = app.MapGroup("/counties");
 var resources = app.MapGroup("/resources");
 
-// Routes - Countries
-// countries.MapGet("/", GetAllCountries);
-// countries.MapGet("/{id}", GetCountryById);
-// countries.MapPost("/", CreateCountry);
-// countries.MapDelete("/{id}", DeleteCountry);
-// countries.MapPatch("/{id}", PatchCountry);
-
-// static async Task<IResult> GetAllCountries(OpenRecordsContext context)
-// {
-//     return TypedResults.Ok(await context.Countries.ToArrayAsync());
-// }
-
-// static async Task<IResult> GetCountryById(OpenRecordsContext context, int id)
-// {
-//     return await context.Countries.FindAsync(id)
-//         is { } country
-//         ? TypedResults.Ok(country)
-//         : TypedResults.NotFound();
-// }
-
-// static async Task<IResult> CreateCountry(Country country, OpenRecordsContext context)
-// {
-//     context.Countries.Add(country);
-//     await context.SaveChangesAsync();
-//
-//     return TypedResults.Created("/countries/{country.Id}", country);
-// }
-
-// static async Task<IResult> DeleteCountry(int id, OpenRecordsContext context)
-// {
-//     if (await context.Countries.FindAsync(id) is { } country)
-//     {
-//         context.Countries.Remove(country);
-//         await context.SaveChangesAsync();
-//         return TypedResults.NoContent();
-//     }
-//     
-//     return TypedResults.NotFound();
-// }
-//
-// static async Task<IResult> PatchCountry(int id, CountryDto countryUpdates, OpenRecordsContext context)
-// {
-//     var country = await context.Countries.FindAsync(id);
-//
-//     if (country is null) return TypedResults.NotFound();
-//
-//     if (countryUpdates.Name is not null) country.Name = countryUpdates.Name;
-//     country.ModifiedOn = DateTime.UtcNow;
-//
-//     await context.SaveChangesAsync();
-//
-//     return TypedResults.NoContent();
-// }
-
-// CRUD Operations - States
-// Get ALL
-states.MapGet("/", async(OpenRecordsContext context) => 
-    await context.States.ToListAsync());
-
-// Get by ID
-states.MapGet("/{id}", async (int id, OpenRecordsContext context) => 
-    await context.States.FindAsync(id)
-        is { } state
-        ? Results.Ok(state)
-        : Results.NotFound());
-
-// Create State
-states.MapPost("/", async (StateDto stateInput, OpenRecordsContext context) =>
-{
-    var country = await context.Countries.FindAsync(stateInput.CountryId);
-    
-    var state = new State
-    {
-        Name = stateInput.Name,
-        Country = country
-    };
-
-    context.States.Add(state);
-    await context.SaveChangesAsync();
-
-    return Results.Created($"/{state.Id}", state);
-});
-
-// Delete State
-states.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
-{
-    if (await context.States.FindAsync(id) is { } state)
-    {
-        context.States.Remove(state);
-        await context.SaveChangesAsync();
-        return Results.NoContent();
-    }
-
-    return Results.NotFound();
-});
-
-// Patch State
-states.MapPatch("/{id}", async (int id, StateDto updatedState, OpenRecordsContext context) =>
-{
-    var state = await context.States.FindAsync(id);
-    var country = await context.Countries.FindAsync(updatedState.CountryId);
-    
-    if (state is null) return Results.NotFound();
-
-    if (updatedState.Name is not null) state.Name = updatedState.Name;
-    if (country is not null) state.Country = country;
-    
-    state.ModifiedOn = DateTime.UtcNow;
-
-    await context.SaveChangesAsync();
-
-    return Results.NoContent();
-});
+// CRUD Operations 
 
 // CRUD Operations - Counties
 // Get All
