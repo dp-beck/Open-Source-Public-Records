@@ -1,9 +1,14 @@
+using System;
 using API;
 using API.Dtos;
 using API.Endpoints;
 using Data;
 using Data.Entities;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,66 +42,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Map Endpoints
 CountryEndpoints.Map(app);
 StateEndpoints.Map(app);
+CountyEndpoints.Map(app);
 
 // Map Group -- moving to separate endpoints files and using typed results
-var counties = app.MapGroup("/counties");
 var resources = app.MapGroup("/resources");
 
 // CRUD Operations 
-
-// CRUD Operations - Counties
-// Get All
-counties.MapGet("/", async(OpenRecordsContext context) => 
-    await context.Counties.ToListAsync());
-
-// Get by ID
-counties.MapGet("/{id}", async (int id, OpenRecordsContext context) => 
-    await context.Counties.FindAsync(id)
-        is { } county
-        ? Results.Ok(county)
-        : Results.NotFound());
-
-// Create County
-counties.MapPost("/", async (County county, OpenRecordsContext context) =>
-{
-    context.Counties.Add(county);
-    await context.SaveChangesAsync();
-
-    return Results.Created($"/countries/{county.Id}", county);
-});
-
-// Delete County
-counties.MapDelete("/{id}", async (int id, OpenRecordsContext context) =>
-{
-    if (await context.Counties.FindAsync(id) is { } county)
-    {
-        context.Counties.Remove(county);
-        await context.SaveChangesAsync();
-        return Results.NoContent();
-    }
-
-    return Results.NotFound();
-});
-
-// Patch County
-counties.MapPatch("/{id}", async (int id, CountyDto updatedCounty, OpenRecordsContext context) =>
-{
-    var county = await context.Counties.FindAsync(id);
-    var state = await context.States.FindAsync(updatedCounty.StateId);
-    
-    if (county is null) return Results.NotFound();
-
-    if (updatedCounty.Name is not null) county.Name = updatedCounty.Name;
-    if (state is not null) county.State = state;
-    
-    county.ModifiedOn = DateTime.UtcNow;
-
-    await context.SaveChangesAsync();
-
-    return Results.NoContent();
-});
 
 // CRUD Operations - Resources
 // Get All
