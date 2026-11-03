@@ -53,7 +53,7 @@ public class CountyEndpoints
         var county = await context.Counties.FindAsync(id);
         var state = await context.States.FindAsync(countyUpdates.StateId);
     
-        if (county is null) return Results.NotFound();
+        if (county is null) return TypedResults.NotFound();
 
         if (countyUpdates.Name is not null) county.Name = countyUpdates.Name;
         if (state is not null) county.State = state;
