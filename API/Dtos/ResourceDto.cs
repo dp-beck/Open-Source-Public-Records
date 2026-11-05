@@ -13,4 +13,7 @@ public class ResourceDto
     public int? CountyId { get; set; }
     public int? StateId { get; set; }
     public int? CountryId { get; set; }
+    public ResourceDto() { }
+    public ResourceDto(Resource resource) => (Name, Type, Description, Url, Notes) = 
+        (resource.Name, resource.Type, resource.Description, resource.Url, resource.Notes);
 }

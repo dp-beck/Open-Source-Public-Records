@@ -19,7 +19,7 @@ public static class StateEndpoints
 
     private static async Task<IResult> GetAllStates(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.States.ToArrayAsync());
+        return TypedResults.Ok(await context.States.Include(s => s.Country).ToArrayAsync());
     }
     
     private static async Task<IResult> GetStateById(int id, OpenRecordsContext context)
@@ -30,12 +30,20 @@ public static class StateEndpoints
             : TypedResults.NotFound();
     }
 
-    static async Task<IResult> CreateState(State state, OpenRecordsContext context)
+    static async Task<IResult> CreateState(StateDto newStateDto, OpenRecordsContext context)
     {
-        context.States.Add(state);
+        Country? country = context.Countries.Find(newStateDto.CountryId);
+        
+        State newState = new()
+        {
+            Name = newStateDto.Name,
+            Country = country
+        };
+        
+        context.States.Add(newState);
         await context.SaveChangesAsync();
 
-        return TypedResults.Created($"/states/{state.Id}", state);
+        return TypedResults.Created($"/states/{newState.Id}", newState);
     }
     
     static async Task<IResult> DeleteState(int id, OpenRecordsContext context)
