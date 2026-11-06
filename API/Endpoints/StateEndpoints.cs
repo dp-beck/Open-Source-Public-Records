@@ -32,7 +32,7 @@ public static class StateEndpoints
 
     static async Task<IResult> CreateState(StateDto newStateDto, OpenRecordsContext context)
     {
-        Country? country = context.Countries.Find(newStateDto.CountryId);
+        Country? country = await context.Countries.FindAsync(newStateDto.CountryId);
         
         State newState = new()
         {

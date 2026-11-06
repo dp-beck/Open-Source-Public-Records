@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Endpoints;
 
-public class ResourceEndpoints
+public static class ResourceEndpoints
 {
     public static void Map(WebApplication app)
     {
@@ -19,22 +19,66 @@ public class ResourceEndpoints
 
     private static async Task<IResult> GetAllResources(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.Resources.ToArrayAsync());
+        return TypedResults.Ok(await context.Resources.Select(x => new ResourceDto(x)).ToArrayAsync());
     }
 
     private static async Task<IResult> GetResourceById(int id, OpenRecordsContext context)
     {
         return await context.Resources.FindAsync(id)
             is { } resource
-            ? TypedResults.Ok(resource)
+            ? TypedResults.Ok(new ResourceDto(resource))
             : TypedResults.NoContent();
     }
 
-    private static async Task<IResult> CreateResource(OpenRecordsContext context, Resource resource)
+    private static async Task<IResult> CreateResource(OpenRecordsContext context, ResourceDto resourceInformation)
     {
+        State? state;
+        if (resourceInformation.StateId is not null)
+        {
+            state = await context.States.FindAsync(resourceInformation.StateId);
+        }
+        else
+        {
+            state = null;
+        }
+
+        County? county;
+        if (resourceInformation.CountyId is not null)
+        {
+            county = await context.Counties.FindAsync(resourceInformation.CountyId);
+        }
+        else
+        {
+            county = null;
+        }
+
+        Country? country;
+        if (resourceInformation.CountryId is not null)
+        {
+            country = await context.Countries.FindAsync(resourceInformation.CountryId);
+        }
+        else
+        {
+            country = null;
+        }
+
+        Resource resource = new()
+        {
+            Name = resourceInformation.Name ?? throw new InvalidOperationException("Resource name is required"),
+            Description = resourceInformation.Description,
+            Url = resourceInformation.Url,
+            Notes = resourceInformation.Notes,
+            Type = resourceInformation.Type,
+            State = state,
+            County = county,
+            Country = country
+        };
+        
         context.Resources.Add(resource);
         await context.SaveChangesAsync();
-        return TypedResults.Created($"/resources/{resource.Id}", resource);
+        
+        resourceInformation = new ResourceDto(resource);
+        return TypedResults.Created($"/resources/{resource.Id}", resourceInformation);
     }
 
     private static async Task<IResult> DeleteResource(int id, OpenRecordsContext context)

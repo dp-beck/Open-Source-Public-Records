@@ -12,7 +12,7 @@ public class State
     public ICollection<County> Counties { get; } = new List<County>();
     public ICollection<Resource> Resources { get; } = new List<Resource>();
     public int CountryId { get; set; }
-    public Country Country { get; set; } = null!;
+    public Country? Country { get; set; } = null!;
     public DateTime? CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
 }

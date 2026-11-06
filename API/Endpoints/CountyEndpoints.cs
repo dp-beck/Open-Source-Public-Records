@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Endpoints;
 
-public class CountyEndpoints
+public static class CountyEndpoints
 {
     public static void Map(WebApplication app)
     {
@@ -19,22 +19,33 @@ public class CountyEndpoints
     
     private static async Task<IResult> GetAllCounties(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.States.ToArrayAsync());
+        return TypedResults.Ok(await context.Counties.Select(x => new CountyDto(x)).ToArrayAsync());
     }
     
     private static async Task<IResult> GetCountyById(int id, OpenRecordsContext context)
     {
         return await context.Counties.FindAsync(id)
             is { } county
-            ? TypedResults.Ok(county)
+            ? TypedResults.Ok(new CountyDto(county))
             : TypedResults.NotFound();
     }
 
-    private static async Task<IResult> CreateCounty(County county, OpenRecordsContext context)
+    private static async Task<IResult> CreateCounty(CountyDto countyInformation, OpenRecordsContext context)
     {
-        context.Counties.Add(county);
+        State? state = await context.States.FindAsync(countyInformation.StateId);
+
+        County newCounty = new County()
+        {
+            Name = countyInformation.Name ?? throw new InvalidOperationException("County name not provided."),
+            FederalCourtDistrictName = countyInformation.FederalCourtDistrictName,
+            State = state,
+        };
+        
+        context.Counties.Add(newCounty);
         await context.SaveChangesAsync();
-        return TypedResults.Created($"/counties/{county.Id}", county);
+        
+        countyInformation = new CountyDto(newCounty);
+        return TypedResults.Created($"/counties/{newCounty.Id}", countyInformation);
     }
 
     private static async Task<IResult> DeleteCounty(int id, OpenRecordsContext context)
@@ -56,6 +67,7 @@ public class CountyEndpoints
         if (county is null) return TypedResults.NotFound();
 
         if (countyUpdates.Name is not null) county.Name = countyUpdates.Name;
+        if (countyUpdates.FederalCourtDistrictName is not null) county.FederalCourtDistrictName = countyUpdates.FederalCourtDistrictName;
         if (state is not null) county.State = state;
     
         county.ModifiedOn = DateTime.UtcNow;

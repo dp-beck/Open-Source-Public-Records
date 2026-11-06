@@ -26,16 +26,23 @@ public static class CountryEndpoints
     {
         return await context.Countries.FindAsync(id)
             is { } country
-            ? TypedResults.Ok(country)
+            ? TypedResults.Ok(new CountryDto(country))
             : TypedResults.NotFound();
     }
     
-    static async Task<IResult> CreateCountry(Country country, OpenRecordsContext context)
+    static async Task<IResult> CreateCountry(CountryDto countryInformation, OpenRecordsContext context)
     {
-        context.Countries.Add(country);
+        Country newCountry = new()
+        {
+            Name = countryInformation.Name ?? throw new InvalidOperationException("No country name was provided"),
+        };
+        
+        context.Countries.Add(newCountry);
         await context.SaveChangesAsync();
+        
+        countryInformation = new CountryDto(newCountry);
 
-        return TypedResults.Created($"/countries/{country.Id}", country);
+        return TypedResults.Created($"/countries/{newCountry.Id}", countryInformation);
     }
     
     static async Task<IResult> DeleteCountry(int id, OpenRecordsContext context)

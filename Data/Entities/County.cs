@@ -10,12 +10,12 @@ public class County
     [MaxLength(500)]
     public string Name { get; set; } = string.Empty;
     [MaxLength(500)]
-    public string FederalCourtDistrictName { get; set; } = string.Empty;
+    public string? FederalCourtDistrictName { get; set; } = string.Empty;
     
     public ICollection<Resource> Resources { get; } = new List<Resource>();
     
     public int StateId { get; set; }
-    public State State { get; set; } = null!;
+    public State? State { get; set; } = null!;
     
     public DateTime? CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
