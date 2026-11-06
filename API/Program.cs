@@ -29,7 +29,7 @@ else
 }
 
 builder.Services.AddDbContext<OpenRecordsContext>(options =>
-    options.UseSqlServer(connection));
+    options.UseAzureSql(connection));
 
 var app = builder.Build();
 
