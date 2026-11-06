@@ -27,5 +27,23 @@ public class OpenRecordsContext(DbContextOptions<OpenRecordsContext> options) : 
         modelBuilder.Entity<Resource>()
             .Property(c => c.CreatedOn)
             .HasDefaultValueSql("GETDATE()"); 
+        
+        modelBuilder.Entity<Resource>()
+            .HasOne(r => r.Country)
+            .WithMany(c => c.Resources)
+            .HasForeignKey(r => r.CountryId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
+        modelBuilder.Entity<Resource>()
+            .HasOne(r => r.State)
+            .WithMany(s => s.Resources)
+            .HasForeignKey(r => r.StateId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
+        modelBuilder.Entity<Resource>()
+            .HasOne(r => r.County)
+            .WithMany(c => c.Resources)
+            .HasForeignKey(r => r.CountyId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -19,7 +19,7 @@ public static class CountryEndpoints
 
     static async Task<IResult> GetAllCountries(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.Countries.ToArrayAsync());
+        return TypedResults.Ok(await context.Countries.Select(x => new CountryDto(x)).ToArrayAsync());
     }
     
     static async Task<IResult> GetCountryById(OpenRecordsContext context, int id)

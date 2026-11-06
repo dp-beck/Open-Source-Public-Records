@@ -15,8 +15,11 @@ public class Resource
     public string Url { get; set; } = string.Empty;
     [MaxLength(1000)]
     public string Notes { get; set; } = string.Empty;
+    public int? CountyId { get; set; }
     public County? County { get; set; }
+    public int? StateId { get; set; }
     public State? State { get; set; }
+    public int? CountryId { get; set; }
     public Country? Country { get; set; }
     public DateTime? CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
