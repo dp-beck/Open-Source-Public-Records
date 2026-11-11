@@ -19,12 +19,22 @@ public static class ResourceEndpoints
 
     private static async Task<IResult> GetAllResources(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.Resources.Select(x => new ResourceDto(x)).ToArrayAsync());
+        var resourceDtos = await context.Resources
+            .Include(resource => resource.County)
+            .Include(resource => resource.State)
+            .Include(resource => resource.Country)
+            .Select(r => new ResourceDto(r))
+            .ToListAsync();
+        return TypedResults.Ok(resourceDtos);
     }
 
     private static async Task<IResult> GetResourceById(int id, OpenRecordsContext context)
     {
-        return await context.Resources.FindAsync(id)
+        return await context.Resources
+                .Include(r => r.County)
+                .Include(r => r.State)
+                .Include(r => r.Country)
+                .FirstOrDefaultAsync(r => r.Id == id)
             is { } resource
             ? TypedResults.Ok(new ResourceDto(resource))
             : TypedResults.NoContent();

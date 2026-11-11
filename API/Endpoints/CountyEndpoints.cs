@@ -12,19 +12,24 @@ public static class CountyEndpoints
         var counties = app.MapGroup("/counties");
         counties.MapGet("/", GetAllCounties);
         counties.MapGet("/{id}", GetCountyById);
-        counties.MapPost("/{id}", CreateCounty);
-        counties.MapDelete("/", DeleteCounty);
+        counties.MapPost("/", CreateCounty);
+        counties.MapDelete("/{id}", DeleteCounty);
         counties.MapPatch("/{id}", PatchCounty);
     }
     
     private static async Task<IResult> GetAllCounties(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.Counties.Select(x => new CountyDto(x)).ToArrayAsync());
+        var countyDtos = await context.Counties
+            .Include(x => x.State)
+            .Select(x => new CountyDto(x))
+            .ToListAsync();
+        
+        return TypedResults.Ok(countyDtos);
     }
     
     private static async Task<IResult> GetCountyById(int id, OpenRecordsContext context)
     {
-        return await context.Counties.FindAsync(id)
+        return await context.Counties.Include(x => x.State).FirstOrDefaultAsync(c => c.Id == id)
             is { } county
             ? TypedResults.Ok(new CountyDto(county))
             : TypedResults.NotFound();
@@ -32,13 +37,11 @@ public static class CountyEndpoints
 
     private static async Task<IResult> CreateCounty(CountyDto countyInformation, OpenRecordsContext context)
     {
-        State? state = await context.States.FindAsync(countyInformation.StateId);
-
         County newCounty = new County()
         {
             Name = countyInformation.Name ?? throw new InvalidOperationException("County name not provided."),
             FederalCourtDistrictName = countyInformation.FederalCourtDistrictName,
-            State = state,
+            StateId = countyInformation.StateId,
         };
         
         context.Counties.Add(newCounty);

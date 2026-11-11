@@ -8,6 +8,7 @@ public class Country
 {
     public int Id { get; set; }
     [MaxLength(500)]
+    [Required]
     public string Name { get; set; } = string.Empty;
     public ICollection<State> States { get; } = new List<State>();
     public ICollection<Resource> Resources {get; } = new List<Resource>();

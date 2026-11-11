@@ -19,31 +19,41 @@ public static class StateEndpoints
 
     private static async Task<IResult> GetAllStates(OpenRecordsContext context)
     {
-        return TypedResults.Ok(await context.States.Include(s => s.Country).ToArrayAsync());
+        var stateDtos = await context.States
+            .Include(c => c.Country)
+            .Include(c => c.Counties)
+            .Select(c => new StateDto(c))
+            .ToListAsync();
+        
+        return TypedResults.Ok(stateDtos);
     }
     
     private static async Task<IResult> GetStateById(int id, OpenRecordsContext context)
     {
-        return await context.States.FindAsync(id)
+        return await context.States
+                .Include(s => s.Country)
+                .Include(s => s.Counties)
+                .FirstOrDefaultAsync(s => s.Id == id)
             is { } state
-            ? TypedResults.Ok(state)
+            ? TypedResults.Ok(new StateDto(state))
             : TypedResults.NotFound();
     }
 
-    static async Task<IResult> CreateState(StateDto newStateDto, OpenRecordsContext context)
+    static async Task<IResult> CreateState(StateDto stateInformation, OpenRecordsContext context)
     {
-        Country? country = await context.Countries.FindAsync(newStateDto.CountryId);
         
         State newState = new()
         {
-            Name = newStateDto.Name,
-            Country = country
+            Name = stateInformation.Name,
+            CountryId = stateInformation.CountryId
         };
         
         context.States.Add(newState);
         await context.SaveChangesAsync();
 
-        return TypedResults.Created($"/states/{newState.Id}", newState);
+        stateInformation = new StateDto(newState);
+
+        return TypedResults.Created($"/states/{newState.Id}", stateInformation);
     }
     
     static async Task<IResult> DeleteState(int id, OpenRecordsContext context)

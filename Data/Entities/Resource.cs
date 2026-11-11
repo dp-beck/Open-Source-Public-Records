@@ -7,14 +7,15 @@ public class Resource
 {
     public int Id { get; set; }
     [MaxLength(500)]
+    [Required]
     public string Name { get; set; } = string.Empty;
     public ResourceType? Type { get; set; }
     [MaxLength(1000)]
-    public string? Description { get; set; } = string.Empty;
+    public string? Description { get; set; } 
     [MaxLength(500)]
-    public string? Url { get; set; } = string.Empty;
+    public string? Url { get; set; } 
     [MaxLength(1000)]
-    public string? Notes { get; set; } = string.Empty;
+    public string? Notes { get; set; } 
     public int? CountyId { get; set; }
     public County? County { get; set; }
     public int? StateId { get; set; }
