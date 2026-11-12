@@ -3,11 +3,14 @@ namespace Data;
 public enum ResourceType
 {
     BusinessRecords,
-    UpperCivilCourt,
-    LoverCivilCourt,
-    UpperCriminaCourt,
-    LoverCriminaCourt,
+    CivilCourts,
+    UpperCivilCourtsOnly,
+    LoverCivilCourtsOnly,
+    CriminalCourts,
+    UpperCriminaCourtsOnly,
+    LoverCriminaCourtsOnly,
     Recorder,
     Ucc,
-    Assessor
+    Assessor,
+    
 }
