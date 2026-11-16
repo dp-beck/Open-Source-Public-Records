@@ -1,6 +1,6 @@
-using API.Dtos;
 using Data;
 using Data.Entities;
+using Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Endpoints;
@@ -21,12 +21,12 @@ public static class CountryEndpoints
     {
         var countryDtos = await context.Countries
             .Include(c => c.States)
-            .Select(c => new CountryDto(c))
+            .Select(c => new CountyDto())
             .ToListAsync();
         
         return TypedResults.Ok(countryDtos);
     }
-    
+
     static async Task<IResult> GetCountryById(OpenRecordsContext context, int id)
     {
 

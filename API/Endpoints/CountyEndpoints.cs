@@ -1,7 +1,7 @@
-using API.Dtos;
 using Data;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Shared.Dtos;
 
 namespace API.Endpoints;
 

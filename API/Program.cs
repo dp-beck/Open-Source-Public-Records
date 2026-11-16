@@ -1,14 +1,6 @@
-using System;
-using API;
-using API.Dtos;
 using API.Endpoints;
 using Data;
-using Data.Entities;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);

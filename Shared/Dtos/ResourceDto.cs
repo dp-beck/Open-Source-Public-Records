@@ -1,7 +1,7 @@
 using Data;
 using Data.Entities;
 
-namespace API.Dtos;
+namespace Shared.Dtos;
 
 public class ResourceDto
 {
