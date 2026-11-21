@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 using WebClient;
 using WebClient.Services;
 
@@ -14,10 +15,12 @@ builder.Services.AddHttpClient<ICountriesService, CountriesService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["BackendUrl"] ?? "http://localhost:5176");
 });
-// configure client for Pod Interactions
-// builder.Services.AddHttpClient<IPodsDataService, PodsDataService>(
-//         "PodsApi",
-//         opt => opt.BaseAddress = new Uri(builder.Configuration["BackendUrl"] ?? "https://localhost:5001"))
-//     .AddHttpMessageHandler<CookieHandler>();
+
+builder.Services.AddHttpClient<IRecordsService, RecordsService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["BackendUrl"] ?? "http://localhost:5176");
+});
+
+builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();
