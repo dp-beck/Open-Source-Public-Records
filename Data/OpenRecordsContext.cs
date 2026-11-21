@@ -9,6 +9,7 @@ public class OpenRecordsContext(DbContextOptions<OpenRecordsContext> options) : 
     public DbSet<State> States { get; set; }
     public DbSet<County> Counties { get; set; }
     public DbSet<Resource> Resources { get; set; }
+    public DbSet<Record> Records { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +26,10 @@ public class OpenRecordsContext(DbContextOptions<OpenRecordsContext> options) : 
             .HasDefaultValueSql("GETDATE()"); 
         
         modelBuilder.Entity<Resource>()
+            .Property(c => c.CreatedOn)
+            .HasDefaultValueSql("GETDATE()"); 
+        
+        modelBuilder.Entity<Record>()
             .Property(c => c.CreatedOn)
             .HasDefaultValueSql("GETDATE()"); 
         
