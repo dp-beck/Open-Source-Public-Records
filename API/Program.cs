@@ -49,5 +49,6 @@ CountryEndpoints.Map(app);
 StateEndpoints.Map(app);
 CountyEndpoints.Map(app);
 ResourceEndpoints.Map(app);
+RecordEndpoints.Map(app);
 
 app.Run();
