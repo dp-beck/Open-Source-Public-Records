@@ -18,7 +18,9 @@ else
     <MudDataGrid T="RecordDto"
                  MultiSelection="true" SortMode="SortMode.Multiple"
                  Filterable="true" QuickFilter="@_quickFilter"
-                 Hideable="true" Items="@Records">
+                 Hideable="true" Items="@Records"
+                 Hover="true" RowStyle="cursor: pointer;"
+                 RowClick="OnRowClickAsync">
         
         <ToolBarContent>
             <MudText Typo="Typo.h6">Records</MudText>
@@ -27,12 +29,28 @@ else
                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <Columns>
+            <HierarchyColumn T="RecordDto" EnableHeaderToggle="@_enableHeaderToggle" />
             <PropertyColumn Property="x => x.Name"/>
             <PropertyColumn Property="x => x.Country"/>
             <PropertyColumn Property="x => x.State"/>
             <PropertyColumn Property="x => x.County"/>
             <PropertyColumn Property="x => x.RecordType" Title="Type"/>
         </Columns>
+        
+        <ChildRowContent>
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@context.Item.Name</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>Description: @context.Item.Description</MudText>
+                    <MudText>Notes: @context.Item.Notes</MudText>
+                </MudCardContent>
+            </MudCard>
+        </ChildRowContent>
+        
     </MudDataGrid>
 
 }

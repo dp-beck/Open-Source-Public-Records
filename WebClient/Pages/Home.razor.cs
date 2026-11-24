@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Shared.Dtos;
 using WebClient.Services;
 
@@ -8,10 +9,13 @@ namespace WebClient.Pages
     {
         private IEnumerable<RecordDto>? Records;
         private bool _isLoading = true;
+        private bool _enableHeaderToggle = true;
         private string? _searchString;
         
         [Inject]
         public IRecordsService? RecordsService { get; set; }
+        [Inject]
+        public NavigationManager? NavigationManager { get; set; }
         
         // quick filter - filter globally across multiple columns with the same input
         private Func<RecordDto, bool> _quickFilter => x =>
@@ -42,6 +46,10 @@ namespace WebClient.Pages
             Records = await RecordsService.GetAllRecords();
             _isLoading = false;
         }
-        
+
+        private void OnRowClickAsync(DataGridRowClickEventArgs<RecordDto> args)
+        {
+            NavigationManager.NavigateTo("https://www.google.com");
+        }
     }
 }
